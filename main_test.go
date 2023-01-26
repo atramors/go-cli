@@ -23,6 +23,11 @@ func TestArgIsNum(t *testing.T) {
 			expected: false,
 		},
 		{
+			name:     "Negative with weird symbol",
+			input:    "৩",
+			expected: false,
+		},
+		{
 			name:     "Negative with only letters",
 			input:    "SomeString",
 			expected: false,

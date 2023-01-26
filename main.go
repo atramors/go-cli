@@ -1,11 +1,11 @@
 package main
 
 import (
-	"database/sql"
 	"fmt"
 	"os"
-	"unicode"
+	"strings"
 
+	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 )
 
@@ -29,14 +29,16 @@ var (
 	)
 )
 
-var (
-	cityName    string
-	temperature string
-	humidity    string
-)
+type CityInfo struct {
+	CityName    string `db:"city_name"`
+	Temperature string `db:"temperature"`
+	Humidity    string `db:"humidity"`
+}
+
+var cI CityInfo
 
 func main() {
-	db, err := sql.Open(driver, connStr)
+	db, err := sqlx.Connect(driver, connStr)
 	ErrorCheck(err)
 	defer db.Close()
 
@@ -50,9 +52,18 @@ func main() {
 
 		switch {
 		case argIsNum(arg):
-			getRowsLimitedBy(arg, db)
+			fmt.Printf("Information about weather in %s cities:\n", arg)
+			response := getRowsLimitedBy(arg, db)
+			for _, row := range response {
+				fmt.Printf(
+					"City: %s, temperature: %s, humidity: %s%%\n",
+					row.CityName, row.Temperature, row.Humidity)
+			}
 		default:
-			getCityInfo(arg, db)
+			response := getCityInfo(arg, db)
+			fmt.Printf(
+				"City: %s, temperature: %s, humidity: %s%%\n",
+				response.CityName, response.Temperature, response.Humidity)
 		}
 	}
 }
@@ -69,8 +80,9 @@ func argIsNum(s string) bool {
 	if len(s) == 0 {
 		return false
 	}
+	digits := "123456789"
 	for _, char := range s {
-		if !unicode.IsDigit(rune(char)) {
+		if !strings.ContainsAny(string(char), digits) {
 			return false
 		}
 	}
@@ -78,34 +90,25 @@ func argIsNum(s string) bool {
 }
 
 // Get info about provided city.
-func getCityInfo(c string, db *sql.DB) {
+func getCityInfo(c string, db *sqlx.DB) CityInfo {
 	query := fmt.Sprintf(
 		`SELECT city_name, temperature, humidity
 		 FROM "weather"
 		 WHERE city_name = '%s'`, c)
-	err := db.QueryRow(query).Scan(&cityName, &temperature, &humidity)
+	err := db.Get(&cI, query)
 	ErrorCheck(err)
+	return cI
 
-	fmt.Printf(
-		"City: %s, temperature: %s, humidity: %s\n",
-		cityName, temperature, humidity)
 }
 
 // Get info about provided number of cities,
 // for example: 10 will print info about 10 cities.
-func getRowsLimitedBy(n string, db *sql.DB) {
+func getRowsLimitedBy(n string, db *sqlx.DB) []CityInfo {
 	query := fmt.Sprintf(
 		`SELECT city_name, temperature, humidity
 		 FROM "weather"
 		 LIMIT '%s'`, n)
-	rows, err := db.Query(query)
-	ErrorCheck(err)
-	fmt.Printf("Information about weather in %s cities:\n", n)
-	for rows.Next() {
-		rows.Scan(&cityName, &temperature, &humidity)
-		// fmt.Println(cityName, temperature, humidity)
-		fmt.Printf(
-			"City: %s, temperature: %s, humidity: %s\n",
-			cityName, temperature, humidity)
-	}
+	cI := []CityInfo{}
+	db.Select(&cI, query)
+	return cI
 }
