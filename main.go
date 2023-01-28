@@ -35,7 +35,7 @@ type CityInfo struct {
 	Humidity    string `db:"humidity"`
 }
 
-var cI CityInfo
+var cityObj CityInfo
 
 func main() {
 	db, err := sqlx.Connect(driver, connStr)
@@ -91,24 +91,26 @@ func argIsNum(s string) bool {
 
 // Get info about provided city.
 func getCityInfo(c string, db *sqlx.DB) CityInfo {
-	query := fmt.Sprintf(
-		`SELECT city_name, temperature, humidity
-		 FROM "weather"
-		 WHERE city_name = '%s'`, c)
-	err := db.Get(&cI, query)
+	query := `
+		SELECT city_name, temperature, humidity
+		FROM "weather"
+		WHERE city_name = $1
+	`
+	err := db.Get(&cityObj, query, c)
 	ErrorCheck(err)
-	return cI
+	return cityObj
 
 }
 
 // Get info about provided number of cities,
 // for example: 10 will print info about 10 cities.
 func getRowsLimitedBy(n string, db *sqlx.DB) []CityInfo {
-	query := fmt.Sprintf(
-		`SELECT city_name, temperature, humidity
-		 FROM "weather"
-		 LIMIT '%s'`, n)
-	cI := []CityInfo{}
-	db.Select(&cI, query)
-	return cI
+	query := `
+		SELECT city_name, temperature, humidity
+		FROM "weather"
+		LIMIT $1
+	`
+	cityObj := []CityInfo{}
+	db.Select(&cityObj, query, n)
+	return cityObj
 }
