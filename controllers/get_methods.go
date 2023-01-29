@@ -7,9 +7,13 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-// Get info about provided city.
+// Get info about city by provided city name.
 func GetCityInfo(c string, db *sqlx.DB) models.CityInfo {
-	cityObj := models.CityInfo{}
+	cityObj := models.CityInfo{
+		CityName:    c,
+		Temperature: "Unknown",
+		Humidity:    "Unknown",
+	}
 	query := `
 		SELECT city_name, temperature, humidity
 		FROM "weather"
@@ -18,11 +22,6 @@ func GetCityInfo(c string, db *sqlx.DB) models.CityInfo {
 	err := db.Get(&cityObj, query, c)
 	if err != nil {
 		log.Println(err)
-		cityObj = models.CityInfo{
-			CityName:    c,
-			Temperature: "Unknown",
-			Humidity:    "Unknown",
-		}
 	}
 
 	log.Printf("Information about weather in %s city\n", c)

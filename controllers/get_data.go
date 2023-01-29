@@ -12,9 +12,9 @@ import (
 // Main method for getting data from database.
 // Using these methods:
 //
-// GetCityInfo 		when city name have been provided (Example: "Barcelona").
+// GetCityInfo -> city name have been provided (Example: "Barcelona").
 //
-// GetRowsLimitedBy when number of cities have been provided (Example: 8).
+// GetRowsLimitedBy -> number of cities have been provided (Example: 8).
 func GetData() {
 	// first argument - programm name
 	if len(os.Args) < 2 {
