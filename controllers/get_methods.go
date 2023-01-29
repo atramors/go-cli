@@ -9,11 +9,7 @@ import (
 
 // Get info about city by provided city name.
 func GetCityInfo(c string, db *sqlx.DB) models.CityInfo {
-	cityObj := models.CityInfo{
-		CityName:    c,
-		Temperature: "Unknown",
-		Humidity:    "Unknown",
-	}
+	cityObj := models.CityInfo{CityName: c}
 	query := `
 		SELECT city_name, temperature, humidity
 		FROM "weather"
