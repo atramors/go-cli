@@ -2,6 +2,8 @@ package main
 
 import (
 	"testing"
+
+	"github.com/atramors/go-cli/helpers"
 )
 
 type testCase struct {
@@ -40,7 +42,7 @@ func TestArgIsNum(t *testing.T) {
 	}
 	for _, test := range testMapper {
 		t.Run(test.name, func(t *testing.T) {
-			result := argIsNum(test.input)
+			result := helpers.ArgIsNum(test.input)
 			if result != test.expected {
 				t.Errorf("%t != %t with input: %s", result, test.expected, test.input)
 			}
