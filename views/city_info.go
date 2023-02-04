@@ -6,8 +6,10 @@ import (
 	"github.com/atramors/go-cli/models"
 )
 
-func PrintCityInfo(c models.CityInfo) {
-	fmt.Printf(
-		"City: %s, temperature: %s, humidity: %s%%\n",
-		c.CityName, c.Temperature, c.Humidity)
+func PrintCity(cities []models.WeatherInfo) {
+	for _, cityInfo := range cities {
+		fmt.Printf(
+			"City: %s, temperature: %s, humidity: %s%%\n",
+			cityInfo.CityName, cityInfo.Temperature, cityInfo.Humidity)
+	}
 }
