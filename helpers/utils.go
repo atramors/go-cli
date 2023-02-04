@@ -8,7 +8,7 @@ import (
 
 // Processing provided arguments.
 func ArgProcessing() (arg string) {
-	if len(os.Args) == 0 || len(os.Args) < 2 {
+	if len(os.Args) < 2 {
 		log.Println("Don't forget to provide a number of rows (more than 0) or city name.")
 	} else if len(os.Args) > 2 {
 		log.Println("For now we support only 1 argument.")
