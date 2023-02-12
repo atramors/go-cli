@@ -75,7 +75,7 @@ func TestGetCityInfo(t *testing.T) {
 			result := GetCityInfo(test.Input, MockStorage{})
 			if !reflect.DeepEqual(result, test.Expected) {
 				// if result != test.Expected {
-				t.Errorf("%v != %v with input: %s", result, test.Expected, test.Input)
+				t.Errorf("'%v' != '%v' with input: '%s'", result, test.Expected, test.Input)
 			}
 		})
 	}
