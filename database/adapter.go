@@ -16,17 +16,20 @@ func ConnectToDB(db *sqlx.DB) *Storage {
 	return &Storage{db}
 }
 
+func (conn *Storage) GetInfo(arg string, query string) (mod []models.WeatherInfo) {
+	conn.db.Select(&mod, query, arg)
+	return
+}
+
 func (conn *Storage) CloseConnection() {
 	log.Println("Connection is closed.")
 	conn.db.Close()
 }
 
-func (conn *Storage) GetByCity(name string) (mod []models.WeatherInfo) {
-	conn.db.Select(&mod, QueryByName, name)
-	return
+func GetWeather(db DB, input string, query string) []models.WeatherInfo {
+	return db.GetInfo(input, query)
 }
 
-func (conn *Storage) GetByNumber(num string) (mod []models.WeatherInfo) {
-	conn.db.Select(&mod, QueryByNumber, num)
-	return
+type DB interface {
+	GetInfo(arg string, query string) (mod []models.WeatherInfo)
 }

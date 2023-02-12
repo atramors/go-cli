@@ -4,40 +4,40 @@ import (
 	"testing"
 )
 
-type testCase struct {
-	name     string
-	input    string
-	expected bool
+type TestCase struct {
+	Name     string
+	Input    string
+	Expected bool
 }
 
 func TestArgIsNum(t *testing.T) {
-	testMapper := []testCase{
+	testMapper := []TestCase{
 		{
-			name:     "Positive with only digits",
-			input:    "777",
-			expected: true,
+			Name:     "Positive with only digits",
+			Input:    "777",
+			Expected: true,
 		},
 		{
-			name:     "Negative with weird symbol",
-			input:    "৩",
-			expected: false,
+			Name:     "Negative with weird symbol",
+			Input:    "৩",
+			Expected: false,
 		},
 		{
-			name:     "Negative with only letters",
-			input:    "SomeString",
-			expected: false,
+			Name:     "Negative with only letters",
+			Input:    "SomeString",
+			Expected: false,
 		},
 		{
-			name:     "Negative with letters and digits",
-			input:    "Some777String",
-			expected: false,
+			Name:     "Negative with letters and digits",
+			Input:    "Some777String",
+			Expected: false,
 		},
 	}
 	for _, test := range testMapper {
-		t.Run(test.name, func(t *testing.T) {
-			result := ArgIsNum(test.input)
-			if result != test.expected {
-				t.Errorf("%t != %t with input: %s", result, test.expected, test.input)
+		t.Run(test.Name, func(t *testing.T) {
+			result := ArgIsNum(test.Input)
+			if result != test.Expected {
+				t.Errorf("%t != %t with input: %s", result, test.Expected, test.Input)
 			}
 		})
 	}

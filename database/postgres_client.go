@@ -37,6 +37,5 @@ func ConnectPostgreSQL() *PostgreSQL {
 	if err != nil {
 		log.Println("Failed connect to database.", err)
 	}
-	db_conn := &PostgreSQL{DB: db}
-	return db_conn
+	return &PostgreSQL{DB: db}
 }
