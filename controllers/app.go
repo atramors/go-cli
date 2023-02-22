@@ -3,13 +3,12 @@ package controllers
 import (
 	"github.com/atramors/go-cli/database"
 	"github.com/atramors/go-cli/helpers"
-	"github.com/atramors/go-cli/interfaces"
 	"github.com/atramors/go-cli/models"
 	"github.com/atramors/go-cli/views"
 )
 
 // Main method for getting data from database.
-func GetData(db *database.Storage) {
+func GetData(db database.DB) {
 
 	input := helpers.ArgProcessing()
 	if input != "" {
@@ -18,20 +17,10 @@ func GetData(db *database.Storage) {
 	}
 }
 
-func GetCityInfo(s string, db *database.Storage) []models.WeatherInfo {
-	if helpers.ArgIsNum(s) {
-		return WeatherInfoForSomeCities(db, s)
+func GetCityInfo(input string, db database.DB) []models.WeatherInfo {
+	if helpers.ArgIsNum(input) {
+		return database.GetWeather(db, input, database.QueryByNumber)
 	}
-	return WeatherInfoByCity(db, s)
+	return database.GetWeather(db, input, database.QueryByName)
 
-}
-
-// Get weather info about provided city (when input - word).
-func WeatherInfoByCity(c interfaces.WeatherCityInfo, input string) []models.WeatherInfo {
-	return c.GetByCity(input)
-}
-
-// Get weather info about provided number of cities (when input - numeric value).
-func WeatherInfoForSomeCities(c interfaces.WeatherCityInfo, input string) []models.WeatherInfo {
-	return c.GetByNumber(input)
 }

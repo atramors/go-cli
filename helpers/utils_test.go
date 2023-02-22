@@ -1,44 +1,103 @@
 package helpers
 
 import (
+	"os"
 	"testing"
 )
 
-type testCase struct {
-	name     string
-	input    string
-	expected bool
+type TestCase struct {
+	Name         string
+	Input        string
+	InputSlc     []string
+	ExpectedBool bool
+	ExpectedStr  string
+	ExpectedSlc  []string
 }
 
 func TestArgIsNum(t *testing.T) {
-	testMapper := []testCase{
+	testMapper := []TestCase{
 		{
-			name:     "Positive with only digits",
-			input:    "777",
-			expected: true,
+			Name:         "Positive with only digits",
+			Input:        "777",
+			ExpectedBool: true,
 		},
 		{
-			name:     "Negative with weird symbol",
-			input:    "৩",
-			expected: false,
+			Name:         "Negative with weird symbol",
+			Input:        "৩",
+			ExpectedBool: false,
 		},
 		{
-			name:     "Negative with only letters",
-			input:    "SomeString",
-			expected: false,
+			Name:         "Negative with only letters",
+			Input:        "SomeString",
+			ExpectedBool: false,
 		},
 		{
-			name:     "Negative with letters and digits",
-			input:    "Some777String",
-			expected: false,
+			Name:         "Negative with letters and digits",
+			Input:        "Some777String",
+			ExpectedBool: false,
 		},
 	}
 	for _, test := range testMapper {
-		t.Run(test.name, func(t *testing.T) {
-			result := ArgIsNum(test.input)
-			if result != test.expected {
-				t.Errorf("%t != %t with input: %s", result, test.expected, test.input)
+		t.Run(test.Name, func(t *testing.T) {
+			result := ArgIsNum(test.Input)
+			if result != test.ExpectedBool {
+				t.Errorf("'%t' != '%t' with input: '%s'", result, test.ExpectedBool, test.Input)
 			}
 		})
+	}
+}
+
+func TestArgProcOne(t *testing.T) {
+	testMapper := []TestCase{
+		{
+			Name:        "Positive with letters",
+			Input:       "WonderCity",
+			ExpectedStr: "WonderCity",
+		},
+		{
+			Name:        "Positive with empty string",
+			Input:       "",
+			ExpectedStr: "",
+		},
+		{
+			Name:        "Positive with 0",
+			Input:       "0",
+			ExpectedStr: "",
+		},
+	}
+	for _, test := range testMapper {
+		t.Run(test.Name, func(t *testing.T) {
+			os.Args = []string{"cmd", test.Input}
+			result := ArgProcessing()
+			if result != test.ExpectedStr {
+				t.Errorf("'%s' != '%s' with input: '%s'", result, test.ExpectedStr, test.Input)
+			}
+		})
+	}
+}
+
+func TestArgProcWithTooManyArgs(t *testing.T) {
+	test := TestCase{
+		Name:     "Test with more than 1 arg provided",
+		InputSlc: []string{"cmd", "WonderCity", "AdditionalArgument"},
+	}
+	os.Args = test.InputSlc
+	result := ArgProcessing()
+
+	if result != test.ExpectedStr {
+		t.Errorf("%s failed, expected: '', got:  '%s'", test.Name, result)
+	}
+}
+
+func TestArgProcWithTooFewArgs(t *testing.T) {
+	test := TestCase{
+		Name:     "with less than 1 arg povided",
+		InputSlc: []string{"cmd"},
+	}
+	os.Args = test.InputSlc
+	result := ArgProcessing()
+
+	if result != test.ExpectedStr {
+		t.Errorf("%s failed, expected no args, but got: '%s'", test.Name, result)
 	}
 }
