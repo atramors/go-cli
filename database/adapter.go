@@ -25,11 +25,3 @@ func (conn *Storage) CloseConnection() {
 	log.Println("Connection is closed.")
 	conn.db.Close()
 }
-
-func GetWeather(db DB, input string, query string) []models.WeatherInfo {
-	return db.GetInfo(input, query)
-}
-
-type DB interface {
-	GetInfo(arg string, query string) (mod []models.WeatherInfo)
-}
