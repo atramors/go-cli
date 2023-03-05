@@ -1,13 +1,13 @@
 package main
 
 import (
-	"github.com/atramors/go-cli/controllers"
 	"github.com/atramors/go-cli/database"
+	"github.com/atramors/go-cli/routes"
 )
 
 func main() {
-	postgres_client := database.ConnectPostgreSQL()
-	db_conn := database.ConnectToDB(postgres_client.DB)
-	defer db_conn.CloseConnection()
-	controllers.GetData(db_conn)
+	postgresClient := database.ConnectPostgreSQL()
+	DBConn := database.ConnectToDB(postgresClient.DB)
+	defer DBConn.CloseConnection()
+	routes.StartGin(DBConn)
 }
