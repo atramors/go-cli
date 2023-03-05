@@ -16,8 +16,8 @@ func ConnectToDB(db *sqlx.DB) *Storage {
 	return &Storage{db}
 }
 
-func (conn *Storage) GetInfo(arg string, query string) (mod []models.WeatherInfo) {
-	conn.db.Select(&mod, query, arg)
+func (conn *Storage) GetInfo(arg string) (mod []models.WeatherInfo) {
+	conn.db.Select(&mod, QueryByName, arg)
 	return
 }
 
